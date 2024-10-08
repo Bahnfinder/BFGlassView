@@ -6,15 +6,15 @@
 //
 
 import UIKit
-import CHGlassmorphismView
+import BFGlassView
 
 class SampleAppViewController: UIViewController {
     // MARK: - Properties
     // safeArea
     @IBOutlet weak var imageTop: NSLayoutConstraint!
     @IBOutlet weak var imageBottom: NSLayoutConstraint!
-    // testTarget (CHGlassmorphismView)
-    @IBOutlet weak var glassmorphismView: CHGlassmorphismView!
+    // testTarget (BFGlassView)
+    @IBOutlet weak var glassmorphismView: BFGlassView!
     // setting component
     @IBOutlet weak var densitySlider: UISlider!
     @IBOutlet weak var cornerSlider: UISlider!

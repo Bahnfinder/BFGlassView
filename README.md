@@ -1,5 +1,5 @@
-# CHGlassmorphismView
-![frontPhoto](https://github.com/Chaehui-Seo/CHGlassmorphismView/assets/73422344/347a0b5f-08a2-477e-861f-993278ba5f35)
+# BFGlassView
+![frontPhoto](https://github.com/Chaehui-Seo/BFGlassView/assets/73422344/347a0b5f-08a2-477e-861f-993278ba5f35)
 
 
 Glassmorphism is a design style using a background blur effect, which makes the view look like a floating translucent glass.
@@ -12,27 +12,27 @@ Glassmorphism is a design style using a background blur effect, which makes the 
 Use [Swift Package Manager](https://swift.org/package-manager/) by adding following line to `Package.swift`:
 ```
 dependencies: [
- .package(url: "https://github.com/Chaehui-Seo/CHGlassmorphismView.git", from: "1.0.1")
+ .package(url: "https://github.com/Chaehui-Seo/BFGlassView.git", from: "1.0.1")
 ]
 ```
 ### Cocoapods
 Use [Cocoapods](https://cocoapods.org/) by adding following line to `Podfile`:
 ```
-pod "CHGlassmorphismView", "~> 1.0.1"
+pod "BFGlassView", "~> 1.0.1"
 ```
 
 ## Usage
 ### Create glassmorphismView
 METHOD #1 <br>
-Import `CHGlassmorphismView` module in your viewController. Now, you can create glassmorphism view programmatically like code below.
+Import `BFGlassView` module in your viewController. Now, you can create glassmorphism view programmatically like code below.
 
 ```swift
-import CHGlassmorphismView
+import BFGlassView
 
-let glassmorphismView = CHGlassmorphismView()
+let glassmorphismView = BFGlassView()
 ```
 METHOD #2 <br>
-Or make existing UIView as glassmorphism view by changing the Custom Class to `CHGlassmorphismView`
+Or make existing UIView as glassmorphism view by changing the Custom Class to `BFGlassView`
 
 <img width="700" alt="storyboard" src="https://user-images.githubusercontent.com/73422344/225058917-118067e4-eaab-4a3f-ac72-326ac5d203d0.png"> <br>
 

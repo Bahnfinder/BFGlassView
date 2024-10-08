@@ -1,7 +1,7 @@
 import XCTest
-@testable import CHGlassmorphismView
+@testable import BFGlassView
 
-final class CHGlassmorphismViewTests: XCTestCase {
+final class BFGlassViewTests: XCTestCase {
     func testExample() throws {
     }
 }

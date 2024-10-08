@@ -2,5 +2,5 @@
 # platform :ios, '13.0'
 
 target 'SampleApp' do
-  pod 'CHGlassmorphismView', :path => '../'
+  pod 'BFGlassView', :path => '../'
 end

@@ -1,5 +1,5 @@
 #
-# Be sure to run `pod lib lint CHGlassmorphismView.podspec' to ensure this is a
+# Be sure to run `pod lib lint BFGlassView.podspec' to ensure this is a
 # valid spec before submitting.
 #
 # Any lines starting with a # are optional, but their use is encouraged
@@ -7,7 +7,7 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'CHGlassmorphismView'
+  s.name             = 'BFGlassView'
   s.version          = '1.0.1'
   s.summary          = 'Assistant for Glassmorphism UI in iOS'
   
@@ -25,17 +25,17 @@ Glassmorphism is a design style using a background blur effect, which makes the 
 This library is an assistant of making glassmorphism UI in iOS with UIKit.
                        DESC
 
-  s.homepage         = 'https://github.com/Chaehui-Seo/CHGlassmorphismView'
+  s.homepage         = 'https://github.com/Chaehui-Seo/BFGlassView'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Chaehui-Seo' => 'sch0991@naver.com' }
-  s.source           = { :git => 'https://github.com/Chaehui-Seo/CHGlassmorphismView.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/Chaehui-Seo/BFGlassView.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '11.0'
 
-  s.source_files = 'Sources/CHGlassmorphismView/**/*'
+  s.source_files = 'Sources/BFGlassView/**/*'
   
   # s.resource_bundles = {
-  #   'CHGlassmorphismView' => ['CHGlassmorphismView/Assets/*.png']
+  #   'BFGlassView' => ['BFGlassView/Assets/*.png']
   # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'

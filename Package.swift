@@ -4,23 +4,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "CHGlassmorphismView",
+    name: "BFGlassView",
     platforms: [
         .iOS(.v13)
     ],
     products: [
         .library(
-            name: "CHGlassmorphismView",
-            targets: ["CHGlassmorphismView"]),
+            name: "BFGlassView",
+            targets: ["BFGlassView"]),
     ],
     dependencies: [
     ],
     targets: [
         .target(
-            name: "CHGlassmorphismView",
+            name: "BFGlassView",
             dependencies: []),
         .testTarget(
-            name: "CHGlassmorphismViewTests",
-            dependencies: ["CHGlassmorphismView"]),
+            name: "BFGlassViewTests",
+            dependencies: ["BFGlassView"]),
     ]
 )
