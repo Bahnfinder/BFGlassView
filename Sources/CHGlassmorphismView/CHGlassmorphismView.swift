@@ -7,6 +7,7 @@ public class CHGlassmorphismView: UIView {
     private var blurView = UIVisualEffectView()
     private var animatorCompletionValue: CGFloat = 0.65
     private let backgroundView = UIView()
+    private let gradientLayer = CAGradientLayer()
     public override var backgroundColor: UIColor? {
         get {
             return .clear
@@ -44,6 +45,7 @@ public class CHGlassmorphismView: UIView {
         self.setBlurDensity(with: density)
         self.setCornerRadius(cornerRadius)
         self.setDistance(distance)
+        self.applyGradientBorder()
     }
     
     /// Customizes theme by changing base view's background color.
@@ -58,7 +60,7 @@ public class CHGlassmorphismView: UIView {
                 self.blurView.effect = UIBlurEffect(style: .light)
             }
             self.animator.fractionComplete = animatorCompletionValue
-            self.layer.borderColor = UIColor.white.withAlphaComponent(0.5).cgColor
+            self.layer.borderColor = UIColor.clear.cgColor
         case .dark:
             self.blurView.effect = nil
             self.blurView.backgroundColor = UIColor.black.withAlphaComponent(0.35)
@@ -67,14 +69,12 @@ public class CHGlassmorphismView: UIView {
                 self.blurView.effect = UIBlurEffect(style: .dark)
             }
             self.animator.fractionComplete = animatorCompletionValue
-            self.layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
+            self.layer.borderColor = UIColor.clear.cgColor
         }
     }
     
     /// Customizes blur density of the view.
     /// Value can be set between 0 ~ 1 (default: 0.65)
-    /// - parameters:
-    ///     - density:  value between 0 ~ 1 (default: 0.65)
     public func setBlurDensity(with density: CGFloat) {
         self.animatorCompletionValue = density
         self.animator.fractionComplete = animatorCompletionValue
@@ -85,12 +85,11 @@ public class CHGlassmorphismView: UIView {
     public func setCornerRadius(_ value: CGFloat) {
         self.backgroundView.layer.cornerRadius = value
         self.blurView.layer.cornerRadius = value
+        self.gradientLayer.cornerRadius = value
     }
     
     /// Change distance of the view.
     /// Value can be set between 0 ~ 100 (default: 20)
-    /// - parameters:
-    ///     - density:  value between 0 ~ 100 (default: 20)
     public func setDistance(_ value: CGFloat) {
         var distance = value
         if value < 0 {
@@ -106,7 +105,6 @@ public class CHGlassmorphismView: UIView {
         // backgoundView(baseView) setting
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         self.insertSubview(backgroundView, at: 0)
-        backgroundView.layer.borderColor = UIColor.white.withAlphaComponent(0.5).cgColor
         backgroundView.layer.borderWidth = 1
         backgroundView.layer.cornerRadius = 20
         backgroundView.clipsToBounds = true
@@ -122,6 +120,7 @@ public class CHGlassmorphismView: UIView {
         blurView.backgroundColor = UIColor.clear
         blurView.translatesAutoresizingMaskIntoConstraints = false
         backgroundView.insertSubview(blurView, at: 0)
+        
         NSLayoutConstraint.activate([
             backgroundView.topAnchor.constraint(equalTo: self.topAnchor),
             backgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -133,11 +132,32 @@ public class CHGlassmorphismView: UIView {
             blurView.widthAnchor.constraint(equalTo: self.widthAnchor)
         ])
         
+        // add gradient border for glassmorphism
+        applyGradientBorder()
+        
         // add animation for managing density
         animator.addAnimations {
             self.blurView.effect = UIBlurEffect(style: .light)
         }
         animator.fractionComplete = animatorCompletionValue // default value is 0.65
+    }
+    
+    private func applyGradientBorder() {
+        gradientLayer.frame = backgroundView.bounds
+        gradientLayer.colors = [
+            UIColor.white.withAlphaComponent(0.8).cgColor, // Bright top-left
+            UIColor.white.withAlphaComponent(0.3).cgColor, // Faded middle
+            UIColor.white.withAlphaComponent(0.5).cgColor  // Brighter bottom-right
+        ]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.cornerRadius = backgroundView.layer.cornerRadius
+        gradientLayer.masksToBounds = true
+        gradientLayer.borderWidth = 1.5
+        
+        if gradientLayer.superlayer == nil {
+            backgroundView.layer.addSublayer(gradientLayer)
+        }
     }
     
     // MARK: - Theme
