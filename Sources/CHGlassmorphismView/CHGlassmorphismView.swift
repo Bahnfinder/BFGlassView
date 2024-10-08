@@ -6,7 +6,7 @@ public class CHGlassmorphismView: UIView {
     private var blurView = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterialLight))
     private var borderGradientLayer = CAGradientLayer()
     private var borderShapeLayer = CAShapeLayer()
-    
+
     public override var backgroundColor: UIColor? {
         get {
             return .clear
@@ -61,23 +61,24 @@ public class CHGlassmorphismView: UIView {
         borderGradientLayer.startPoint = CGPoint(x: 0, y: 0)
         borderGradientLayer.endPoint = CGPoint(x: 1, y: 1)
         borderGradientLayer.colors = [
-            UIColor.white.withAlphaComponent(0.4).cgColor,
-            UIColor.white.withAlphaComponent(0.1).cgColor,
-            UIColor.white.withAlphaComponent(0.4).cgColor
+            UIColor.white.withAlphaComponent(0.6).cgColor, // Top-left corner
+            UIColor.white.withAlphaComponent(0.1).cgColor, // Center (subtle)
+            UIColor.white.withAlphaComponent(0.6).cgColor  // Bottom-right corner
         ]
         borderGradientLayer.locations = [0, 0.5, 1]
         borderGradientLayer.frame = bounds
         borderGradientLayer.cornerRadius = 20
         
+        // Shape layer to define the path of the border
         borderShapeLayer = CAShapeLayer()
-        let path = UIBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), cornerRadius: 20)
+        let path = UIBezierPath(roundedRect: bounds.insetBy(dx: 1, dy: 1), cornerRadius: 20)
         borderShapeLayer.path = path.cgPath
         borderShapeLayer.fillColor = UIColor.clear.cgColor
-        borderShapeLayer.strokeColor = UIColor.clear.cgColor // Placeholder
-        borderShapeLayer.lineWidth = 1
+        borderShapeLayer.strokeColor = UIColor.white.cgColor // The stroke color will not be directly visible because the gradient mask will define the color.
+        borderShapeLayer.lineWidth = 1.5
         borderShapeLayer.cornerRadius = 20
         
-        // Apply the border gradient as a mask
+        // Apply the gradient as the mask of the shape layer to give the "glassy" border effect
         borderGradientLayer.mask = borderShapeLayer
         layer.addSublayer(borderGradientLayer)
     }
@@ -85,6 +86,6 @@ public class CHGlassmorphismView: UIView {
     private func updateBorder() {
         // Update the gradient border frame and corner radius on layout changes
         borderGradientLayer.frame = bounds
-        borderShapeLayer.path = UIBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), cornerRadius: 20).cgPath
+        borderShapeLayer.path = UIBezierPath(roundedRect: bounds.insetBy(dx: 1, dy: 1), cornerRadius: 20).cgPath
     }
 }
