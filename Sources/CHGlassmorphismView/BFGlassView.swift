@@ -1,7 +1,7 @@
 import UIKit
 
 @IBDesignable
-public class CHGlassmorphismView: UIView {
+public class BFGlassView: UIView {
     // MARK: - Properties
     private var blurView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
     private var borderGradientLayer = CAGradientLayer()
