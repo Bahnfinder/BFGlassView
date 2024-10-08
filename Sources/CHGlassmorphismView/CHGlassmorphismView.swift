@@ -7,7 +7,8 @@ public class CHGlassmorphismView: UIView {
     private var blurView = UIVisualEffectView()
     private var animatorCompletionValue: CGFloat = 0.65
     private let backgroundView = UIView()
-    private let gradientLayer = CAGradientLayer()
+    private let gradientBorderLayer = CAGradientLayer()
+    
     public override var backgroundColor: UIColor? {
         get {
             return .clear
@@ -27,12 +28,12 @@ public class CHGlassmorphismView: UIView {
     }
     
     deinit {
-        animator.pauseAnimation()
         animator.stopAnimation(true)
     }
     
-    public override func awakeFromNib() {
-        super.awakeFromNib()
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        self.updateGradientBorder()
     }
     
     // MARK: - Public Method
@@ -45,7 +46,6 @@ public class CHGlassmorphismView: UIView {
         self.setBlurDensity(with: density)
         self.setCornerRadius(cornerRadius)
         self.setDistance(distance)
-        self.applyGradientBorder()
     }
     
     /// Customizes theme by changing base view's background color.
@@ -56,25 +56,25 @@ public class CHGlassmorphismView: UIView {
             self.blurView.effect = nil
             self.blurView.backgroundColor = UIColor.clear
             self.animator.stopAnimation(true)
-            self.animator.addAnimations {
-                self.blurView.effect = UIBlurEffect(style: .light)
+            self.animator.addAnimations { [weak self] in
+                self?.blurView.effect = UIBlurEffect(style: .light)
             }
             self.animator.fractionComplete = animatorCompletionValue
-            self.layer.borderColor = UIColor.clear.cgColor
         case .dark:
             self.blurView.effect = nil
             self.blurView.backgroundColor = UIColor.black.withAlphaComponent(0.35)
             self.animator.stopAnimation(true)
-            self.animator.addAnimations {
-                self.blurView.effect = UIBlurEffect(style: .dark)
+            self.animator.addAnimations { [weak self] in
+                self?.blurView.effect = UIBlurEffect(style: .dark)
             }
             self.animator.fractionComplete = animatorCompletionValue
-            self.layer.borderColor = UIColor.clear.cgColor
         }
     }
     
     /// Customizes blur density of the view.
     /// Value can be set between 0 ~ 1 (default: 0.65)
+    /// - parameters:
+    ///     - density:  value between 0 ~ 1 (default: 0.65)
     public func setBlurDensity(with density: CGFloat) {
         self.animatorCompletionValue = density
         self.animator.fractionComplete = animatorCompletionValue
@@ -85,27 +85,24 @@ public class CHGlassmorphismView: UIView {
     public func setCornerRadius(_ value: CGFloat) {
         self.backgroundView.layer.cornerRadius = value
         self.blurView.layer.cornerRadius = value
-        self.gradientLayer.cornerRadius = value
+        self.layer.cornerRadius = value
+        self.gradientBorderLayer.cornerRadius = value
     }
     
     /// Change distance of the view.
     /// Value can be set between 0 ~ 100 (default: 20)
+    /// - parameters:
+    ///     - distance:  value between 0 ~ 100 (default: 20)
     public func setDistance(_ value: CGFloat) {
-        var distance = value
-        if value < 0 {
-            distance = 0
-        } else if value > 100 {
-            distance = 100
-        }
+        let distance = min(max(value, 0), 100)
         self.backgroundView.layer.shadowRadius = distance
     }
     
     // MARK: - Private Method
     private func initialize() {
-        // backgoundView(baseView) setting
+        // Setup backgroundView
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         self.insertSubview(backgroundView, at: 0)
-        backgroundView.layer.borderWidth = 1
         backgroundView.layer.cornerRadius = 20
         backgroundView.clipsToBounds = true
         backgroundView.layer.masksToBounds = false
@@ -113,50 +110,70 @@ public class CHGlassmorphismView: UIView {
         backgroundView.layer.shadowOffset = CGSize(width: 0, height: 0)
         backgroundView.layer.shadowOpacity = 0.2
         backgroundView.layer.shadowRadius = 20.0
+        backgroundView.layer.shouldRasterize = true
+        backgroundView.layer.rasterizationScale = UIScreen.main.scale
         
-        // blurEffectView setting
+        // Setup blurView
         blurView.layer.masksToBounds = true
         blurView.layer.cornerRadius = 20
         blurView.backgroundColor = UIColor.clear
         blurView.translatesAutoresizingMaskIntoConstraints = false
         backgroundView.insertSubview(blurView, at: 0)
         
+        // Constraints
         NSLayoutConstraint.activate([
             backgroundView.topAnchor.constraint(equalTo: self.topAnchor),
             backgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            backgroundView.heightAnchor.constraint(equalTo: self.heightAnchor),
-            backgroundView.widthAnchor.constraint(equalTo: self.widthAnchor),
-            blurView.topAnchor.constraint(equalTo: self.topAnchor),
-            blurView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            blurView.heightAnchor.constraint(equalTo: self.heightAnchor),
-            blurView.widthAnchor.constraint(equalTo: self.widthAnchor)
+            backgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            blurView.topAnchor.constraint(equalTo: backgroundView.topAnchor),
+            blurView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor),
+            blurView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor),
+            blurView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor),
         ])
         
-        // add gradient border for glassmorphism
-        applyGradientBorder()
-        
-        // add animation for managing density
-        animator.addAnimations {
-            self.blurView.effect = UIBlurEffect(style: .light)
+        // Animator setup
+        animator.addAnimations { [weak self] in
+            self?.blurView.effect = UIBlurEffect(style: .light)
         }
         animator.fractionComplete = animatorCompletionValue // default value is 0.65
+        
+        // Setup gradient border
+        setupGradientBorder()
     }
     
-    private func applyGradientBorder() {
-        gradientLayer.frame = backgroundView.bounds
-        gradientLayer.colors = [
-            UIColor.white.withAlphaComponent(0.8).cgColor, // Bright top-left
-            UIColor.white.withAlphaComponent(0.3).cgColor, // Faded middle
-            UIColor.white.withAlphaComponent(0.5).cgColor  // Brighter bottom-right
+    private func setupGradientBorder() {
+        gradientBorderLayer.colors = [
+            UIColor.white.withAlphaComponent(0.5).cgColor,
+            UIColor.white.withAlphaComponent(0.0).cgColor,
+            UIColor.white.withAlphaComponent(0.5).cgColor
         ]
-        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
-        gradientLayer.cornerRadius = backgroundView.layer.cornerRadius
-        gradientLayer.masksToBounds = true
-        gradientLayer.borderWidth = 1.5
+        gradientBorderLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientBorderLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientBorderLayer.frame = self.bounds
+        gradientBorderLayer.cornerRadius = self.layer.cornerRadius
+        gradientBorderLayer.masksToBounds = true
+        gradientBorderLayer.borderWidth = 1
+        gradientBorderLayer.borderColor = UIColor.clear.cgColor
+        gradientBorderLayer.type = .axial
         
-        if gradientLayer.superlayer == nil {
-            backgroundView.layer.addSublayer(gradientLayer)
+        // Create a shape layer that defines the path for the border
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.lineWidth = gradientBorderLayer.borderWidth
+        shapeLayer.path = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius).cgPath
+        shapeLayer.fillColor = nil
+        shapeLayer.strokeColor = UIColor.black.cgColor
+        gradientBorderLayer.mask = shapeLayer
+        
+        self.layer.addSublayer(gradientBorderLayer)
+    }
+    
+    private func updateGradientBorder() {
+        gradientBorderLayer.frame = self.bounds
+        gradientBorderLayer.cornerRadius = self.layer.cornerRadius
+        
+        if let shapeLayer = gradientBorderLayer.mask as? CAShapeLayer {
+            shapeLayer.path = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius).cgPath
         }
     }
     
