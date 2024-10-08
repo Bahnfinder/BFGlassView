@@ -3,7 +3,7 @@ import UIKit
 @IBDesignable
 public class CHGlassmorphismView: UIView {
     // MARK: - Properties
-    private var blurView = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterialLight))
+    private var blurView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
     private var borderGradientLayer = CAGradientLayer()
     private var borderShapeLayer = CAShapeLayer()
 
